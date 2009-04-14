@@ -1,0 +1,7 @@
+= yad
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 Don Barlow. See LICENSE for details.
