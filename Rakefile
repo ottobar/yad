@@ -6,11 +6,15 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "yad"
     gem.summary = %Q{TODO}
-    gem.email = "ottobar@gmail.com"
-    gem.homepage = "http://github.com/redsson/yad"
+    gem.email = "ottobar@perryburghacker.com"
+    gem.homepage = "http://yad.rubyforge.org"
     gem.authors = ["Don Barlow"]
     gem.rubyforge_project = "yad"
-  
+    gem.add_dependency('rake', '~> 0.8.4')
+    gem.add_dependency('open4', '~> 0.9.6')
+    gem.add_development_dependency('voloko-sdoc', '~> 0.2.12.1')
+    gem.add_development_dependency('technicalpickels-jeweler', '~> 0.9.1')
+    
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
@@ -29,30 +33,29 @@ Spec::Rake::SpecTask.new(:rcov) do |spec|
   spec.rcov = true
 end
 
-begin
-  require 'cucumber/rake/task'
-  Cucumber::Rake::Task.new(:features)
-rescue LoadError
-  task :features do
-    abort "Cucumber is not available. In order to run features, you must: sudo gem install cucumber"
-  end
-end
-
 task :default => :spec
 
 require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  if File.exist?('VERSION.yml')
-    config = YAML.load(File.read('VERSION.yml'))
-    version = "#{config[:major]}.#{config[:minor]}.#{config[:patch]}"
-  else
-    version = ""
-  end
+begin
+  require 'sdoc'
+  Rake::RDocTask.new('doc') do |rdoc|
+    if File.exist?('VERSION.yml')
+      config = YAML.load(File.read('VERSION.yml'))
+      version = "#{config[:major]}.#{config[:minor]}.#{config[:patch]}"
+    else
+      version = ""
+    end
 
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "yad #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+    rdoc.rdoc_dir = 'doc'
+    rdoc.title = "Yad: Yet Another Deployer v#{version}"
+    rdoc.rdoc_files.include('README*')
+    rdoc.rdoc_files.include('lib/**/*.rb')
+    rdoc.rdoc_files.include('LICENSE')
+    rdoc.main = 'README.rdoc'
+    rdoc.template = 'direct'
+  end
+rescue
+  puts "Sdoc not available. Install it with: sudo gem install voloko-sdoc -s http://gems.github.com"
 end
 
 begin
@@ -64,14 +67,14 @@ begin
     
     namespace :release do
       desc "Publish RDoc to RubyForge."
-      task :docs => [:rdoc] do
+      task :docs => [:doc] do
         config = YAML.load(
             File.read(File.expand_path('~/.rubyforge/user-config.yml'))
         )
 
         host = "#{config['username']}@rubyforge.org"
         remote_dir = "/var/www/gforge-projects/yad/"
-        local_dir = 'rdoc'
+        local_dir = 'doc'
 
         Rake::SshDirPublisher.new(host, remote_dir, local_dir).upload
       end

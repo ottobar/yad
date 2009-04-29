@@ -1,6 +1,33 @@
-= yad
+= Yad: Yet Another Deployer
 
-Description goes here.
+== Description
+
+Vlad the Deployer by Ryan Davis, Eric Hodel and Wilson Bilkovich is 
+great, but it is not exactly what I want. The underlying 
+Rake::RemoteTask is awesome, so I want to keep that. However, I 
+want to change how the recipes work. Therefore, I created yet 
+another deployer, Yad.
+
+In general, Yad is a deployer for database-backed applications in the
+style of Capistrano by Jamis Buck. However, in addition to deploying
+Rails or Merb web applications, it can be used to deploy applications
+that do not have a web tier and work from a cron task or something
+of that nature. 
+
+
+== Installation
+
+  sudo gem install yad
+or
+  sudo gem install ottobar-yad
+
+
+== Links
+
+* http://github.com/ottobar/yad/tree/master
+* http://yad.rubyforge.org
+* http://rubyforge.org/projects/yad
+
 
 == Copyright
 
