@@ -171,11 +171,20 @@ class Rake::RemoteTask < Rake::Task
         v = v.call if Proc === v
         v
       end
-    elsif default
+    elsif default || default == false
       v = @@env[name] = default
     else
       raise Rake::RemoteTask::FetchError
     end
+  end
+
+  def self.get_options_hash(*options)
+    options_hash = {}
+    options.each do |option|
+      option_value = Rake::RemoteTask.fetch(option, false)
+      options_hash[option] = option_value if option_value
+    end
+    options_hash
   end
 
   # Add host +host_name+ that belongs to +roles+. Extra arguments may
@@ -203,7 +212,7 @@ class Rake::RemoteTask < Rake::Task
       self.roles[r].keys
     }.flatten.uniq.sort
   end
-
+  
   def self.mandatory(name, desc) # :nodoc:
     self.set(name) do
       raise(Rake::RemoteTask::ConfigurationError,
@@ -305,28 +314,23 @@ class Rake::RemoteTask < Rake::Task
     mandatory :deploy_to,  "deploy path"
     mandatory :domain,     "server domain"
 
-    simple_set(:deploy_timestamped, true,
-               :deploy_via,         :export,
+    simple_set(:app_env,            "production",
+               :deploy_timestamped, true,
                :keep_releases,      5,
-               :migrate_args,       "",
-               :migrate_target,     :latest,
-               :app_env,            "production",
                :rake_cmd,           "rake",
-               :revision,           "head",
                :rsync_cmd,          "rsync",
                :rsync_flags,        ['-azP', '--delete'],
                :ssh_cmd,            "ssh",
                :ssh_flags,          [],
                :sudo_cmd,           "sudo",
                :sudo_flags,         ['-p Password:'],
-               :sudo_prompt,        /^Password:/,
-               :umask,              '02')
+               :sudo_prompt,        /^Password:/)   
 
-    set(:current_release)    { File.join(releases_path, releases[-1]) }
-    set(:latest_release)     { deploy_timestamped ?release_path: current_release }
-    set(:previous_release)   { File.join(releases_path, releases[-2]) }
-    set(:release_name)       { Time.now.utc.strftime("%Y%m%d%H%M%S") }
-    set(:release_path)       { File.join(releases_path, release_name) }
+    set(:current_release)    { deploy_timestamped ? File.join(releases_path, releases[-1]) : releases_path }
+    set(:latest_release)     { deploy_timestamped ? release_path : current_release }
+    set(:previous_release)   { deploy_timestamped ? File.join(releases_path, releases[-2]) : current_release }
+    set(:release_name)       { deploy_timestamped ? Time.now.utc.strftime("%Y%m%d%H%M%S") : nil }
+    set(:release_path)       { release_name ? File.join(releases_path, release_name) : releases_path }
     set(:releases)           { task.run("ls -x #{releases_path}").split.sort }
 
     set_path :current_path,  "current"
@@ -411,7 +415,7 @@ class Rake::RemoteTask < Rake::Task
     }
     return false
   end
-
+  
   # Action is used to run a task's remote_actions in parallel on each
   # of its hosts. Actions are created automatically in
   # Rake::RemoteTask#enhance.
@@ -445,6 +449,7 @@ class Rake::RemoteTask < Rake::Task
         t = task.clone
         t.target_host = host
         thread = Thread.new(t) do |task|
+          Thread.current.abort_on_exception = true
           Thread.current[:task] = task
           case block.arity
           when 1
@@ -457,6 +462,7 @@ class Rake::RemoteTask < Rake::Task
         @workers.add thread
       end
       @workers.list.each { |thr| thr.join }
+      
     end
   end
 end

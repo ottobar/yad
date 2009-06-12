@@ -77,4 +77,3 @@ class Rake::RemoteTask
   end
 
 end
-

@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', 'spec_helper')
+require File.join(File.dirname(__FILE__), '..', '..', 'spec_helper')
 
 describe Rake::RemoteTask do
   def create_example_task(options = {})
@@ -211,6 +211,18 @@ describe Rake::RemoteTask do
     $TESTING = true
   end
   
+  it "should allow a variable to be set to false" do
+    set(:can_set_nil, nil)
+    set(:lies_are, false)
+
+    Rake::RemoteTask.can_set_nil.should be_nil
+    Rake::RemoteTask.lies_are.should be_false
+  end
+
+  it "should fetch false as a default for a variable" do
+    Rake::RemoteTask.fetch(:unknown, false).should be_false
+  end
+  
   it "should be enhanced with prerequisites and actions when it has been created with a body" do
     set_example_hosts
     body = Proc.new { 5 }
@@ -344,6 +356,24 @@ describe Rake::RemoteTask do
     result.should eql("file1\nfile2\nPassword:\n")
     out.read.should eql("file1\nfile2\n")
     err.read.should eql("Password:\n")
+  end
+
+  it "should get an options hash for a single option" do
+    set :my_option, 10
+    options = Rake::RemoteTask.get_options_hash(:my_option)
+    options.should ==({ :my_option => 10 })
+  end
+
+  it "should get an options hash for multiple options" do
+    set :my_option, 10
+    set :my_other_option, 'my other option value'
+    options = Rake::RemoteTask.get_options_hash(:my_option, :my_other_option)
+    options.should ==({ :my_option => 10, :my_other_option => 'my other option value' })
+  end
+  
+  it "should an empty options hash for an undefined option" do
+    options = Rake::RemoteTask.get_options_hash(:my_undefined_option)
+    options.should ==({})
   end
   
 end

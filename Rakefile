@@ -5,15 +5,15 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "yad"
-    gem.summary = %Q{TODO}
+    gem.summary = %Q{Yet another deployer, pretty much stolen from Vlad}
     gem.email = "ottobar@perryburghacker.com"
     gem.homepage = "http://yad.rubyforge.org"
     gem.authors = ["Don Barlow"]
     gem.rubyforge_project = "yad"
-    gem.add_dependency('rake', '~> 0.8.4')
+    gem.add_dependency('rake', '~> 0.8.7')
     gem.add_dependency('open4', '~> 0.9.6')
     gem.add_development_dependency('voloko-sdoc', '~> 0.2.12.1')
-    gem.add_development_dependency('technicalpickels-jeweler', '~> 0.9.1')
+    gem.add_development_dependency('technicalpickles-jeweler', '~> 1.0.1')
     
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

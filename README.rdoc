@@ -3,15 +3,15 @@
 == Description
 
 Vlad the Deployer by Ryan Davis, Eric Hodel and Wilson Bilkovich is 
-great, but it is not exactly what I want. The underlying 
-Rake::RemoteTask is awesome, so I want to keep that. However, I 
-want to change how the recipes work. Therefore, I created yet 
+great, but it is not exactly what I wanted. The underlying 
+Rake::RemoteTask is awesome, so I wanted to keep that. However, I 
+wanted to change how the recipes work. Therefore, I created yet 
 another deployer, Yad.
 
 In general, Yad is a deployer for database-backed applications in the
 style of Capistrano by Jamis Buck. However, in addition to deploying
-Rails or Merb web applications, it can be used to deploy applications
-that do not have a web tier and work from a cron task or something
+Rails web applications, it can be used to deploy applications that do 
+not have a web tier and work from a cron task or something
 of that nature. 
 
 
@@ -21,6 +21,23 @@ of that nature.
 or
   sudo gem install ottobar-yad
 
+
+== Examples
+
+=== Single stage with git, rails, passenger
+
+  # #{Rails.root}/lib/tasks/deploy.rake
+  begin
+    require 'yad'
+
+    set :application, "myapp"
+    set :repository, "path/to/my/repository/#{application}.git"
+    set :domain, "mydomain.com"
+    set :deploy_to "/home/deploy/projects/#{application}"
+
+  rescue
+    puts "Yad not available. Install it with: sudo gem install yad"
+  end
 
 == Links
 

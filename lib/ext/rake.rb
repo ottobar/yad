@@ -37,6 +37,22 @@ module Rake
       all_tasks[name].actions.delete_at(-1)
     end
   end
+  
+  class Task
+    # Invokes the task named +task_name+ if the +module_name+ has been
+    # defined. It is the mechanism for delegating commands out of the
+    # core to modules specific for your application
+    def self.invoke_if_defined(task_name, module_name, error_message = nil)
+      module_value = Rake::RemoteTask.fetch(module_name, false)
+      if module_value
+        # require deletaged task file
+        require File.join(Yad::LIBPATH, 'yad', 'tasks', module_name.to_s, module_value.to_s)
+        Rake::Task[task_name].invoke
+      elsif error_message
+        raise ArgumentError, error_message
+      end
+    end
+  end
 end
 
 # Declare a remote host and its roles. Equivalent to <tt>role</tt>,
@@ -48,7 +64,7 @@ end
 # Copy a (usually generated) file to +remote_path+. Contents of block
 # are copied to +remote_path+ and you may specify an optional
 # base_name for the tempfile (aids in debugging).
-def put(remote_path, base_name = 'yad.unknown')
+def put(remote_path, base_name = File.baseename(remote_path))
   require 'tempfile'
   Tempfile.open base_name do |fp|
     fp.puts yield
