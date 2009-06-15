@@ -10,17 +10,16 @@ require "ext/rake/remote_task"
 require "ext/rake"
 require "ext/string"
 
-require "yad/commands/core"
+require "yad/core"
+Yad::Core.define_tasks
 
-require "yad/commands/app/passenger"
+require "yad/app/passenger"
 
-require "yad/commands/framework/rails"
+require "yad/framework/rails"
 
-require "yad/commands/db/rails"
+require "yad/db/rails"
 
-require "yad/commands/scm/git"
-
-require "yad/tasks/core"
+require "yad/scm/git"
 
 module Yad
   # :stopdoc:

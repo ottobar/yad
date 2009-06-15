@@ -45,8 +45,8 @@ module Rake
     def self.invoke_if_defined(task_name, module_name, error_message = nil)
       module_value = Rake::RemoteTask.fetch(module_name, false)
       if module_value
-        # require deletaged task file
-        require File.join(Yad::LIBPATH, 'yad', 'tasks', module_name.to_s, module_value.to_s)
+        # define delegated tasks
+        eval("Yad::#{module_name.to_s.classify}::#{module_value.to_s.classify}.define_tasks")
         Rake::Task[task_name].invoke
       elsif error_message
         raise ArgumentError, error_message

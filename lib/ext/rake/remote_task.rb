@@ -325,10 +325,9 @@ class Rake::RemoteTask < Rake::Task
                :sudo_cmd,           "sudo",
                :sudo_flags,         ['-p Password:'],
                :sudo_prompt,        /^Password:/)   
-
-    set(:current_release)    { deploy_timestamped ? File.join(releases_path, releases[-1]) : releases_path }
-    set(:latest_release)     { deploy_timestamped ? release_path : current_release }
-    set(:previous_release)   { deploy_timestamped ? File.join(releases_path, releases[-2]) : current_release }
+    
+    set(:latest_release)     { deploy_timestamped ? File.join(releases_path, releases[-1]) : releases_path }
+    set(:previous_release)   { deploy_timestamped ? File.join(releases_path, releases[-2]) : releases_path }
     set(:release_name)       { deploy_timestamped ? Time.now.utc.strftime("%Y%m%d%H%M%S") : nil }
     set(:release_path)       { release_name ? File.join(releases_path, release_name) : releases_path }
     set(:releases)           { task.run("ls -x #{releases_path}").split.sort }
