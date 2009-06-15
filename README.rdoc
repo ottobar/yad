@@ -35,7 +35,7 @@ or
     set :domain, "mydomain.com"
     set :deploy_to "/home/deploy/projects/#{application}"
 
-  rescue
+  rescue LoadError
     puts "Yad not available. Install it with: sudo gem install yad"
   end
 

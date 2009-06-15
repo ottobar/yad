@@ -54,7 +54,7 @@ begin
     rdoc.main = 'README.rdoc'
     rdoc.template = 'direct'
   end
-rescue
+rescue LoadError
   puts "Sdoc not available. Install it with: sudo gem install voloko-sdoc -s http://gems.github.com"
 end
 
