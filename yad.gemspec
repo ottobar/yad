@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{yad}
-  s.version = "0.0.2"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Don Barlow"]
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
      "lib/yad/core.rb",
      "lib/yad/db/rails.rb",
      "lib/yad/framework/rails.rb",
+     "lib/yad/maintenance/shared_system.rb",
      "lib/yad/scm/git.rb",
      "spec/ext/rake/remote_task_spec.rb",
      "spec/spec_helper.rb",
@@ -38,7 +39,7 @@ Gem::Specification.new do |s|
      "spec/yad/core_spec.rb",
      "spec/yad/db/rails_spec.rb",
      "spec/yad/framework/rails_spec.rb",
-     "spec/yad/maintenance/rails_spec.rb",
+     "spec/yad/maintenance/shared_system_spec.rb",
      "spec/yad/scm/git_spec.rb",
      "yad.gemspec"
   ]
@@ -55,7 +56,7 @@ Gem::Specification.new do |s|
      "spec/yad/core_spec.rb",
      "spec/yad/db/rails_spec.rb",
      "spec/yad/framework/rails_spec.rb",
-     "spec/yad/maintenance/rails_spec.rb",
+     "spec/yad/maintenance/shared_system_spec.rb",
      "spec/yad/scm/git_spec.rb"
   ]
 
