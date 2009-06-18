@@ -55,7 +55,6 @@ describe Yad::Core do
     cmd = Yad::Core.build_files_array(nil)
     cmd.should eql([])
   end
-    
   
   it "should build the files array for a single file" do
     cmd = Yad::Core.build_files_array('file1')

@@ -118,6 +118,16 @@ module Yad
           Rake::Task.invoke_if_defined('yad:app:stop', :app, "Please specify the app delegate via the :app variable")
         end
         
+        desc "Turns on the maintenance page for the application"
+        remote_task :turn_on_maintenance, :roles => :web do
+          Rake::Task.invoke_if_defined('yad:maintenance:turn_on', :maintenance, "Please specify the maintenance delegate via the :maintenance variable")
+        end
+        
+        desc "Turns off the maintenance page for the application"
+        remote_task :turn_off_maintenance, :roles => :web do
+          Rake::Task.invoke_if_defined('yad:maintenance:turn_off', :maintenance, "Please specify the maintenance delegate via the :maintenance variable")
+        end
+        
         desc "Rolls back to the previous release, but DOES NOT restart the application"
         remote_task :rollback do
           cmd = Yad::Core.build_rollback_command(current_path, previous_release, latest_release)
