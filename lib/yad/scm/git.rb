@@ -43,6 +43,7 @@ module Yad
                 export_command = Yad::Scm::Git.build_export_command(scm_path, release_path)
                 cmd = Yad::Core.build_update_source_code_command(checkout_command, export_command, release_path)
                 run(cmd)
+                puts("source code updated on #{target_host}")
               rescue => e
                 cmd = Yad::Core.build_remove_directory_command(release_path)
                 run(cmd)

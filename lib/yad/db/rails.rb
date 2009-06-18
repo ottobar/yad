@@ -30,6 +30,7 @@ module Yad
               options = Rake::RemoteTask.get_options_hash(:app_env, :rake_cmd)
               cmd = Yad::Db::Rails.build_create_db_command(current_path, options)
               run(cmd)
+              puts("database created")
             end
             
             desc "Runs migrations on the database"
@@ -48,6 +49,7 @@ module Yad
               end
               cmd = Yad::Db::Rails.build_migrate_db_command(target_directory, options)
               run(cmd)
+              puts("database migrations completed")
             end
             
           end

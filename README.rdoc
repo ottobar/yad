@@ -24,7 +24,7 @@ or
 
 == Examples
 
-=== Single stage with git, rails, passenger
+=== Single stage with git, rails, and passenger
 
   # #{Rails.root}/lib/tasks/deploy.rake
   begin
@@ -35,6 +35,11 @@ or
     set :domain, "mydomain.com"
     set :deploy_to "/home/deploy/projects/#{application}"
 
+    set :scm, :git
+    set :framework, :rails
+    set :framework_update_db_config_via, :copy
+    set :db, :rails
+    set :app, :passenger
   rescue LoadError
     puts "Yad not available. Install it with: sudo gem install yad"
   end

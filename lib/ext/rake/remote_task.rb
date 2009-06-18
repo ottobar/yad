@@ -2,6 +2,15 @@ $TESTING ||= false
 $TRACE = Rake.application.options.trace
 $-w = true if $TRACE
 
+def export receiver, *methods
+  methods.each do |method|
+    eval "def #{method} *args, &block; #{receiver}.#{method}(*args, &block);end"
+  end
+end
+
+export "Thread.current[:task]", :get, :put, :rsync, :run, :sudo, :target_host
+export "Rake::RemoteTask",      :host, :remote_task, :role, :set
+
 # Rake::RemoteTask is a subclass of Rake::Task that adds
 # remote_actions that execute in parallel on multiple hosts via ssh.
 class Rake::RemoteTask < Rake::Task
@@ -64,18 +73,35 @@ class Rake::RemoteTask < Rake::Task
 
     @remote_actions.each { |act| act.execute(target_hosts, self, args) }
   end
-
-  # Use rsync to send +local+ to +remote+ on target_host.
+  
+  # Pulls +files+ from the +target_host+ using rsync to +local_directory+.
+  def get(local_directory, *files)
+    rsync(files.map { |f| "#{target_host}:#{f}" }, local_directory)
+  end
+  
+  # Copys a (usually generated) file to +remote_path+. Contents of block
+  # are copied to +remote_path+ and you may specify an optional
+  # base_name for the tempfile (aids in debugging).
+  def put(remote_path, base_name = File.basename(remote_path))
+    require 'tempfile'
+    Tempfile.open(base_name) do |fp|
+      fp.puts yield
+      fp.flush
+      rsync(fp.path, "#{target_host}:#{remote_path}")
+    end
+  end
+  
+  # Use rsync to send +local+ to +remote+.
   def rsync(local, remote)
-    cmd = [rsync_cmd, rsync_flags, local, "#{target_host}:#{remote}"]
-    cmd = cmd.flatten.compact
+    cmd = [rsync_cmd, rsync_flags, local, remote].flatten.compact
+    cmdstr = cmd.join(' ')
 
-    warn cmd.join(' ') if $TRACE
+    warn cmdstr if $TRACE
 
     success = system(*cmd)
 
     unless success then
-      raise Rake::RemoteTask::CommandFailedError, "execution failed: #{cmd.join ' '}"
+      raise Rake::RemoteTask::CommandFailedError, "execution failed: #{cmdstr}"
     end
   end
 
@@ -177,7 +203,9 @@ class Rake::RemoteTask < Rake::Task
       raise Rake::RemoteTask::FetchError
     end
   end
-
+  
+  # Fetches a set of options and turns it into a hash to be passed to
+  # the application specific delegate tasks.
   def self.get_options_hash(*options)
     options_hash = {}
     options.each do |option|
@@ -263,12 +291,25 @@ class Rake::RemoteTask < Rake::Task
   end
 
   # Adds role +role_name+ with +host+ and +args+ for that host.
-  def self.role(role_name, host, args = {})
-    [*host].each do |hst|
-      raise ArgumentError, "invalid host: #{hst}" if hst.nil? or hst.empty?
+  def self.role(role_name, host = nil, args = {})
+    if block_given? then
+      raise ArgumentError, 'host not allowed with block' unless host.nil?
+ 
+      begin
+        current_roles << role_name
+        yield
+      ensure
+        current_roles.delete role_name
+      end
+    else
+      raise ArgumentError, 'host required' if host.nil?
+ 
+      [*host].each do |hst|
+        raise ArgumentError, "invalid host: #{hst}" if hst.nil? or hst.empty?
+      end
+      @@roles[role_name] = {} if @@def_role_hash.eql? @@roles[role_name]
+      @@roles[role_name][host] = args
     end
-    @@roles[role_name] = {} if @@def_role_hash.eql? @@roles[role_name]
-    @@roles[role_name][host] = args
   end
 
   # The configured roles.
@@ -327,16 +368,27 @@ class Rake::RemoteTask < Rake::Task
                :sudo_prompt,        /^Password:/)   
     
     set(:latest_release)     { deploy_timestamped ? File.join(releases_path, releases[-1]) : releases_path }
-    set(:previous_release)   { deploy_timestamped ? File.join(releases_path, releases[-2]) : releases_path }
+    set(:previous_release) do
+      if deploy_timestamped
+        if releases[-2]
+          File.join(releases_path, releases[-2])
+        else
+          nil
+        end
+      else
+        releases_path
+      end
+    end
     set(:release_name)       { deploy_timestamped ? Time.now.utc.strftime("%Y%m%d%H%M%S") : nil }
     set(:release_path)       { release_name ? File.join(releases_path, release_name) : releases_path }
     set(:releases)           { task.run("ls -x #{releases_path}").split.sort }
 
-    set_path :current_path,  "current"
-    set_path :releases_path, "releases"
-    set_path :scm_path,      "scm"
-    set_path :shared_path,   "shared"
-
+    set_path :current_path,        "current"
+    set_path :releases_path,       "releases"
+    set_path :scm_path,            "scm"
+    set_path :shared_path,         "shared"
+    set_path :shared_config_path,  File.join("shared", "config")
+    
     set(:sudo_password) do
       state = `stty -g`
 

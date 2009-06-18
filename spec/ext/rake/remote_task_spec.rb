@@ -282,18 +282,33 @@ describe Rake::RemoteTask do
 
   it "should build rsync commands" do
     task = create_example_task
-    task.target_host = "app.example.com"
-    task.rsync 'localfile', 'remotefile'
+    task.rsync 'localfile', 'app.example.com:remotefile'
     task.commands.size.should eql(1)
     task.commands.first.should eql(%w[rsync -azP --delete localfile app.example.com:remotefile])
   end
 
   it "should error when an rsync command fails" do
     task = create_example_task
-    task.target_host = "app.example.com"
     task.action = lambda { false }
-    lambda { task.rsync 'local', 'remote' }.should raise_error(Rake::RemoteTask::CommandFailedError,
-                                                               "execution failed: rsync -azP --delete local app.example.com:remote")
+    lambda { task.rsync 'local', 'app.example.com:remote' }.should raise_error(Rake::RemoteTask::CommandFailedError,
+                                                                              "execution failed: rsync -azP --delete local app.example.com:remote")
+  end
+  
+  it "should build get commands" do
+    task = create_example_task
+    task.target_host = 'app.example.com'
+    lambda { task.get('tmp', 'remote1', 'remote2') }.should_not raise_error
+    task.commands.size.should eql(1)
+    task.commands.first.should eql(%w[rsync -azP --delete app.example.com:remote1 app.example.com:remote2 tmp])
+  end
+    
+  it "should build put commands" do
+    task = create_example_task
+    task.target_host = 'app.example.com'
+    lambda { task.put('dest') { 'whatever' } }.should_not raise_error
+    task.commands.size.should eql(1)
+    task.commands.first[3] = 'some_temp_file_name'
+    task.commands.first.should eql( %w[rsync -azP --delete some_temp_file_name app.example.com:dest])
   end
 
   it "should run remote commands" do

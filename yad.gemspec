@@ -6,7 +6,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Don Barlow"]
-  s.date = %q{2009-06-12}
+  s.date = %q{2009-06-15}
+  s.description = %q{Yad: Yet Another Deployer}
   s.email = %q{ottobar@perryburghacker.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -26,24 +27,20 @@ Gem::Specification.new do |s|
      "lib/ext/rake/remote_task.rb",
      "lib/ext/string.rb",
      "lib/yad.rb",
-     "lib/yad/commands/app/passenger.rb",
-     "lib/yad/commands/core.rb",
-     "lib/yad/commands/db/rails.rb",
-     "lib/yad/commands/framework/rails.rb",
-     "lib/yad/commands/scm/git.rb",
-     "lib/yad/tasks/app/passenger.rb",
-     "lib/yad/tasks/core.rb",
-     "lib/yad/tasks/db/rails.rb",
-     "lib/yad/tasks/framework/rails.rb",
-     "lib/yad/tasks/scm/git.rb",
+     "lib/yad/app/passenger.rb",
+     "lib/yad/core.rb",
+     "lib/yad/db/rails.rb",
+     "lib/yad/framework/rails.rb",
+     "lib/yad/scm/git.rb",
      "spec/ext/rake/remote_task_spec.rb",
      "spec/spec_helper.rb",
-     "spec/yad/commands/app/passenger_spec.rb",
-     "spec/yad/commands/core_spec.rb",
-     "spec/yad/commands/db/rails_spec.rb",
-     "spec/yad/commands/framework/rails_spec.rb",
-     "spec/yad/commands/maintenance/rails_spec.rb",
-     "spec/yad/commands/scm/git_spec.rb"
+     "spec/yad/app/passenger_spec.rb",
+     "spec/yad/core_spec.rb",
+     "spec/yad/db/rails_spec.rb",
+     "spec/yad/framework/rails_spec.rb",
+     "spec/yad/maintenance/rails_spec.rb",
+     "spec/yad/scm/git_spec.rb",
+     "yad.gemspec"
   ]
   s.homepage = %q{http://yad.rubyforge.org}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -54,12 +51,12 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/ext/rake/remote_task_spec.rb",
      "spec/spec_helper.rb",
-     "spec/yad/commands/app/passenger_spec.rb",
-     "spec/yad/commands/core_spec.rb",
-     "spec/yad/commands/db/rails_spec.rb",
-     "spec/yad/commands/framework/rails_spec.rb",
-     "spec/yad/commands/maintenance/rails_spec.rb",
-     "spec/yad/commands/scm/git_spec.rb"
+     "spec/yad/app/passenger_spec.rb",
+     "spec/yad/core_spec.rb",
+     "spec/yad/db/rails_spec.rb",
+     "spec/yad/framework/rails_spec.rb",
+     "spec/yad/maintenance/rails_spec.rb",
+     "spec/yad/scm/git_spec.rb"
   ]
 
   if s.respond_to? :specification_version then

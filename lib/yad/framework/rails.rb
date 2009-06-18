@@ -43,6 +43,7 @@ module Yad
                options = Rake::RemoteTask.get_options_hash(:umask)
                cmd = Yad::Framework::Rails.build_setup_command(shared_path, options)
                run(cmd)
+               puts("Rails set up on #{target_host}")
              end
              
              desc "Updates the framework configuration and working directories after a new release has been exported"
@@ -50,6 +51,7 @@ module Yad
                options = Rake::RemoteTask.get_options_hash(:app_env, :framework_update_db_config_via)
                cmd = Yad::Framework::Rails.build_update_command(release_path, shared_path, options)
                run(cmd)
+               puts("Rails shared paths and files updated on #{target_host}")
              end
              
            end

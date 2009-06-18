@@ -15,6 +15,7 @@ module Yad
              remote_task :start, :roles => :app do
                cmd = Yad::App::Passenger.build_start_command(current_path)
                run(cmd)
+               puts("Passenger app restarted on #{target_host}")
              end
 
            end

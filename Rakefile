@@ -5,6 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "yad"
+    gem.description = "Yad: Yet Another Deployer"
     gem.summary = %Q{Yet another deployer, pretty much stolen from Vlad}
     gem.email = "ottobar@perryburghacker.com"
     gem.homepage = "http://yad.rubyforge.org"
