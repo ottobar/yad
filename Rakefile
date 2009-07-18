@@ -47,7 +47,7 @@ begin
       version = ""
     end
 
-    rdoc.rdoc_dir = 'doc'
+    rdoc.rdoc_dir = 'rdoc'
     rdoc.title = "Yad: Yet Another Deployer v#{version}"
     rdoc.rdoc_files.include('README*')
     rdoc.rdoc_files.include('lib/**/*.rb')

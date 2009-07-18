@@ -104,13 +104,15 @@ module Yad
         remote_task :start_app, :roles => :app do
           Rake::Task.invoke_if_defined('yad:app:start', :app, "Please specify the app delegate via the :app variable")
         end
-
+        
+        desc "Starts the web server"
         remote_task :start_web, :roles => :web do
-          # TODO:
+          Rake::Task.invoke_if_defined('yad:web:start', :web, "Please specify the web delegate via the :web variable")
         end
-
+        
+        "Stops the web server"
         remote_task :stop_web, :roles => :web do
-          # TODO:
+          Rake::Task.invoke_if_defined('yad:web:stop', :web, "Please specify the web delegate via the :web variable")
         end
         
         desc "Stops the application server"

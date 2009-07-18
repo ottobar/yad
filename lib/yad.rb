@@ -13,6 +13,8 @@ require "ext/string"
 require "yad/core"
 Yad::Core.define_tasks
 
+require "yad/web/apache"
+
 require "yad/maintenance/shared_system"
 
 require "yad/app/passenger"
