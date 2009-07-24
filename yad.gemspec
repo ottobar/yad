@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{yad}
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Don Barlow"]
-  s.date = %q{2009-06-18}
+  s.date = %q{2009-07-24}
   s.description = %q{Yad: Yet Another Deployer}
   s.email = %q{ottobar@perryburghacker.com}
   s.extra_rdoc_files = [
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION.yml",
+     "doc/faq.rdoc",
      "features/step_definitions/yad_steps.rb",
      "features/support/env.rb",
      "features/yad.feature",
@@ -33,6 +34,7 @@ Gem::Specification.new do |s|
      "lib/yad/framework/rails.rb",
      "lib/yad/maintenance/shared_system.rb",
      "lib/yad/scm/git.rb",
+     "lib/yad/web/apache.rb",
      "spec/ext/rake/remote_task_spec.rb",
      "spec/spec_helper.rb",
      "spec/yad/app/passenger_spec.rb",
@@ -41,6 +43,7 @@ Gem::Specification.new do |s|
      "spec/yad/framework/rails_spec.rb",
      "spec/yad/maintenance/shared_system_spec.rb",
      "spec/yad/scm/git_spec.rb",
+     "spec/yad/web/apache_spec.rb",
      "yad.gemspec"
   ]
   s.homepage = %q{http://yad.rubyforge.org}
@@ -57,7 +60,8 @@ Gem::Specification.new do |s|
      "spec/yad/db/rails_spec.rb",
      "spec/yad/framework/rails_spec.rb",
      "spec/yad/maintenance/shared_system_spec.rb",
-     "spec/yad/scm/git_spec.rb"
+     "spec/yad/scm/git_spec.rb",
+     "spec/yad/web/apache_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
