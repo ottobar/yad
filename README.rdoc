@@ -60,7 +60,7 @@ or
       set :application, "myapp"
       set :repository, "path/to/my/repository/#{application}.git"
       set :domain, "mydomain.com"
-      set :deploy_to "/home/deploy/projects/#{application}"
+      set :deploy_to, "/home/deploy/projects/#{application}"
 
       set :scm, :git
       set :framework, :rails
