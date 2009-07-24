@@ -94,9 +94,6 @@ or
     or
     rake yad:deploy_with_migrations
 
---
-see the FAQ[link:files/doc/faq_rdoc.html] for more details
-++
 
 == Links
 
