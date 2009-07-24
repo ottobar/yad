@@ -29,7 +29,7 @@ describe Yad::Core do
 
   it "should not build the rollback command if there are less than 2 releases" do
     cmd = Yad::Core.build_rollback_command('path/to/current/release', nil, 'path/to/latest/release')
-    cmd.should eql("")
+    cmd.should eql("echo no previous release for rollback")
   end
   
   it "should build the rollback command if there are at lease 2 releases" do
@@ -39,9 +39,9 @@ describe Yad::Core do
 
   it "should not build the cleanup command when there are less than or equal to the max number of releases to keep" do
     cmd = Yad::Core.build_cleanup_command(5, 'path/to/releases', %w(release1 release2 release3 release4))
-    cmd.should eql("")
+    cmd.should eql("echo keeping all releases")
     cmd = Yad::Core.build_cleanup_command(5, 'path/to/releases', %w(release1 release2 release3 release4 release5))
-    cmd.should eql("") 
+    cmd.should eql("echo keeping all releases")
   end
 
   it "should build the cleanup command when there are more than the max number of releases to keep" do

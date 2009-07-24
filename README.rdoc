@@ -14,6 +14,31 @@ Rails web applications, it can be used to deploy applications that do
 not have a web tier and work from a cron task or something
 of that nature. 
 
+Yad works by setting up a a core set of tasks that do nothing by
+default. It is up to you to define delegates that will take the 
+actions specific for your application.
+
+http://sites.google.com/a/perrysburghacker.com/yad/_/rsrc/1247934950955/Home/yad.png
+
+At this time, the following delegates are supported:
+
+==== Source Code Managers
+* Git
+==== Database Managers
+* None
+* Rails
+==== Frameworks
+* None
+* Rails
+==== Application Servers
+* Passenger
+==== Maintenance Page  
+* Shared System 
+  (i.e. maintenance.html in the shared/config directory copied to the shared/system 
+  directory to be seen by your web server)
+==== Web Servers
+* Apache
+
 
 == Installation
 
@@ -24,25 +49,54 @@ or
 
 == Examples
 
-=== Single stage with git, rails, and passenger
+=== Single stage with git, rails and passenger
 
-  # #{Rails.root}/lib/tasks/deploy.rake
-  begin
-    require 'yad'
+* Create a deploy.rake file:
 
-    set :application, "myapp"
-    set :repository, "path/to/my/repository/#{application}.git"
-    set :domain, "mydomain.com"
-    set :deploy_to "/home/deploy/projects/#{application}"
+    # #{Rails.root}/lib/tasks/deploy.rake
+    begin
+      require 'yad'
 
-    set :scm, :git
-    set :framework, :rails
-    set :framework_update_db_config_via, :copy
-    set :db, :rails
-    set :app, :passenger
-  rescue LoadError
-    puts "Yad not available. Install it with: sudo gem install yad"
-  end
+      set :application, "myapp"
+      set :repository, "path/to/my/repository/#{application}.git"
+      set :domain, "mydomain.com"
+      set :deploy_to "/home/deploy/projects/#{application}"
+
+      set :scm, :git
+      set :framework, :rails
+      # assumes that you have a config/database_production.yml file in your repository
+      set :framework_update_db_config_via, :copy
+      set :db, :rails
+      set :app, :passenger
+
+      desc "Deploy a new version of the application"
+      task "yad:deploy" => %w(yad:update yad:start_app yad:cleanup)
+
+      desc "Deploy a new version of the application and run database migrations"
+      task "yad:deploy_with_migrations" => %w(yad:update yad:migrate_db yad:start_app yad:cleanup)
+
+    rescue LoadError
+      puts "Yad not available. Install it with: sudo gem install yad"
+    end
+
+* For initial deployment, run the following tasks:
+
+    rake yad:setup
+    rake yad:update
+    rake yad:create_db
+    rake yad:migrate_db
+
+* Then, configure or otherwise set up your web server
+
+* For subsequent releases, run:
+
+    rake yad:deploy
+    or
+    rake yad:deploy_with_migrations
+
+--
+see the FAQ[link:files/doc/faq_rdoc.html] for more details
+++
 
 == Links
 

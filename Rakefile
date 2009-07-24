@@ -47,11 +47,12 @@ begin
       version = ""
     end
 
-    rdoc.rdoc_dir = 'rdoc'
+    rdoc.rdoc_dir = 'doc/rdoc'
     rdoc.title = "Yad: Yet Another Deployer v#{version}"
     rdoc.rdoc_files.include('README*')
     rdoc.rdoc_files.include('lib/**/*.rb')
     rdoc.rdoc_files.include('LICENSE')
+    rdoc.rdoc_files.include('doc/faq.rdoc')
     rdoc.main = 'README.rdoc'
     rdoc.template = 'direct'
   end
@@ -75,7 +76,7 @@ begin
 
         host = "#{config['username']}@rubyforge.org"
         remote_dir = "/var/www/gforge-projects/yad/"
-        local_dir = 'doc'
+        local_dir = 'doc/rdoc'
 
         Rake::SshDirPublisher.new(host, remote_dir, local_dir).upload
       end

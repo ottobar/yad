@@ -44,7 +44,7 @@ module Yad
 
     def self.build_cleanup_command(max_release_count, releases_directory, all_releases)
       if all_releases.length <= max_release_count
-        ""
+        "echo keeping all releases"
       else
         releases_to_remove = (all_releases - all_releases.last(max_release_count)).map { |release| File.join(releases_directory, release) }.join(" ")
         "rm -rf #{releases_to_remove}"
@@ -53,7 +53,7 @@ module Yad
 
     def self.build_rollback_command(current_release_symlink, previous_release_directory, latest_release_directory)
       if previous_release_directory.nil? || previous_release_directory == latest_release_directory || latest_release_directory.nil?
-        ""
+        "echo no previous release for rollback"
       else
         "rm -f #{current_release_symlink}; ln -s #{previous_release_directory} #{current_release_symlink} && rm -rf #{latest_release_directory}"
       end
